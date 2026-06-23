@@ -1,5 +1,5 @@
-@extends('layouts.admin')
-@section('title', 'Heatmap Monitoring')
+@extends('layouts.firefighter')
+@section('title', 'Heatmap')
 
 @section('content')
 <h1 style="color:var(--vf-red);margin-top:0;">Real-Time Heatmap</h1>

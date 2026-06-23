@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'VeriFyre Admin')</title>
+    <title>@yield('title', 'VeriFyre Firefighter')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ time() }}">
@@ -15,14 +15,12 @@
 
 <div class="vf-admin-shell">
 
-    @include('partials.admin-sidebar')
+    @include('partials.firefighter-sidebar')
 
     <div class="vf-admin-main">
 
         <header class="vf-admin-topbar">
-            <span class="vf-admin-role-label">
-                {{ auth()->user()->role === 'superadmin' ? 'Super Admin Dashboard' : 'Admin Dashboard' }}
-            </span>
+            <span class="vf-admin-role-label">Firefighter Dashboard</span>
 
             <div class="vf-admin-topbar__right">
                 <form class="vf-admin-search" action="#" onsubmit="return false;">

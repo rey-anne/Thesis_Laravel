@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\PostOperationController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Firefighter\ProfileController as FirefighterProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,7 @@ Route::get('/education', [PageController::class, 'education'])->name('education'
 Route::get('/crowdsource', [PageController::class, 'crowdsource'])->name('crowdsource');
 Route::get('/cybersecurity', [PageController::class, 'cybersecurity'])->name('cybersecurity');
 Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/heatmap-data', [PageController::class, 'heatmapData'])->name('heatmap.data');
 
 /*
 |--------------------------------------------------------------------------
@@ -101,12 +103,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,superadm
 
 /*
 |--------------------------------------------------------------------------
-| FIREFIGHTER AREA (role: bfp_firefighter) -- UI ONLY FOR NOW
-| TODO next phase: wrap with `auth` + `role:bfp_firefighter` middleware
+| FIREFIGHTER AREA (role: bfp_firefighter)
 |--------------------------------------------------------------------------
 */
-Route::prefix('firefighter')->name('firefighter.')->group(function () {
+Route::prefix('firefighter')->name('firefighter.')->middleware(['auth', 'role:bfp_firefighter'])->group(function () {
     Route::get('/home', [PageController::class, 'firefighterHome'])->name('home');
-    Route::get('/reports', [PageController::class, 'firefighterReports'])->name('reports');
-    Route::get('/profile', [PageController::class, 'firefighterProfile'])->name('profile');
+    Route::get('/heatmap', [PageController::class, 'firefighterHeatmap'])->name('heatmap');
+    Route::get('/profile', [FirefighterProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [FirefighterProfileController::class, 'update'])->name('profile.update');
 });

@@ -135,8 +135,6 @@ WHAT'S NOT BUILT YET (next phase: backend)
 ----------------------------------------------------
 - Login/Register are NOT yet locked behind auth+role middleware on
   the admin/firefighter routes.
-- AI fire-level / duplicate-photo / authenticity scoring (currently
-  just a TODO comment in ReportController).
 - Real heatmap data, report-to-station routing, unit assignment,
   audit log writing, Super Administrator account management screens.
 - Admin/Firefighter profile edit forms are static HTML for now (no

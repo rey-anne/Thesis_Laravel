@@ -953,8 +953,15 @@ select:focus-visible {
     border-bottom: 1px solid var(--vf-line);
 }
 
+.vf-admin-role-label {
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--vf-red);
+    white-space: nowrap;
+}
+
 .vf-admin-search input {
-    width: 280px;
+    width: 220px;
     height: 40px;
     padding: 0 16px;
     border: 1.5px solid var(--vf-line);

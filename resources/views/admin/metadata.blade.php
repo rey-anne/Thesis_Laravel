@@ -3,16 +3,13 @@
 
 @section('content')
 <h1 style="color:var(--vf-red);margin-top:0;">Metadata Validation</h1>
-<p style="color:var(--vf-muted);">Review GPS, timestamp, device, and AI assessment data submitted with each report.</p>
+<p style="color:var(--vf-muted);">Review GPS, timestamp, and device data submitted with each report.</p>
 
 <table class="vf-admin-table">
     <thead>
         <tr>
             <th>Report</th>
             <th>GPS</th>
-            <th>AI Fire Level</th>
-            <th>Authenticity</th>
-            <th>Duplicate?</th>
             <th>Validation</th>
             <th>Action</th>
         </tr>
@@ -22,9 +19,6 @@
             <tr>
                 <td>#{{ $report->id }} &middot; {{ $report->reported_at?->diffForHumans() }}</td>
                 <td>{{ $report->has_gps_pin ? "{$report->latitude}, {$report->longitude}" : '—' }}</td>
-                <td>{{ $report->ai_fire_level ?? '—' }}</td>
-                <td>{{ $report->ai_authenticity_score !== null ? $report->ai_authenticity_score.'%' : '—' }}</td>
-                <td>{{ $report->ai_is_duplicate ? 'Yes' : 'No' }}</td>
                 <td>
                     @if($report->verified_by_crowdsourcing)
                         <span class="vf-status--verified">Validated</span>
@@ -50,7 +44,7 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="7">No reports yet.</td></tr>
+            <tr><td colspan="4">No reports yet.</td></tr>
         @endforelse
     </tbody>
 </table>

@@ -3,7 +3,7 @@
 
 @section('content')
 <h1 style="color:var(--vf-red);margin-top:0;">Fire Reports</h1>
-<p style="color:var(--vf-muted);">Click a report to see its location, evidence, and AI assessment.</p>
+<p style="color:var(--vf-muted);">Click a report to see its location and evidence.</p>
 
 <div class="vf-reports-grid">
 
@@ -27,7 +27,7 @@
 
     <div class="vf-card" id="vfReportDetail">
         <h3 style="margin-top:0;color:var(--vf-red);">Select a report</h3>
-        <p style="color:var(--vf-muted);">Report details, location, photo evidence, and AI fire-level assessment will appear here.</p>
+        <p style="color:var(--vf-muted);">Report details, location, and photo evidence will appear here.</p>
     </div>
 
 </div>
@@ -54,7 +54,6 @@
 
                 panel.innerHTML = `
                     <h3 style="margin-top:0;color:var(--vf-red);">Report #${r.id}</h3>
-                    <p><span class="vf-badge">AI Fire Level: ${r.ai_fire_level ?? 'Pending'}</span></p>
                     ${map}
                     ${photo}
                     <div style="display:flex;gap:10px;">

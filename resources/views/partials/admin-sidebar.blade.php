@@ -24,7 +24,7 @@
 @endphp
 
 <aside class="vf-admin-sidebar">
-    <a href="{{ route('home') }}" class="vf-admin-sidebar__brand">VeriFyre</a>
+    <a href="{{ route('admin.home') }}" class="vf-admin-sidebar__brand">VeriFyre</a>
 
     <nav class="vf-admin-sidebar__nav">
         @foreach($links as $routeName => $label)

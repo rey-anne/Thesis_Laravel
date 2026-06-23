@@ -24,7 +24,6 @@ class FireReportController extends Controller
             'latitude' => $report->latitude,
             'longitude' => $report->longitude,
             'status' => $report->status,
-            'ai_fire_level' => $report->ai_fire_level,
             'photo_url' => $report->photo_path ? Storage::url($report->photo_path) : null,
             'reported_at' => $report->reported_at?->diffForHumans(),
         ]);

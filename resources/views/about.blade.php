@@ -8,7 +8,7 @@
     <div class="vf-card" style="margin-bottom:24px;">
         <h3 style="color:var(--vf-red);margin-top:0;">Our Objectives</h3>
         <ul style="color:var(--vf-muted);line-height:1.8;">
-            <li>Authenticate fire incident reports using AI-assisted metadata validation to reduce false alarms.</li>
+            <li>Authenticate fire incident reports using metadata and crowdsourced validation to reduce false alarms.</li>
             <li>Enable faster, more accurate Bureau of Fire Protection response through real-time location reporting.</li>
             <li>Apply cybersecurity best practices - role-based access, audit logging, and evidence integrity - throughout the system.</li>
             <li>Strengthen community participation through crowdsourced incident verification.</li>

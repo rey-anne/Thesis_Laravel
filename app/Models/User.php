@@ -17,6 +17,12 @@ class User extends Authenticatable
 
     protected $hidden = ['password', 'remember_token'];
 
+    protected $casts = [
+        'last_login_at' => 'datetime',
+        'date_registered' => 'datetime',
+        'approved_at' => 'datetime',
+    ];
+
     public function firefighterProfile()
     {
         return $this->hasOne(FirefighterProfile::class);

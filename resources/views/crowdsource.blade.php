@@ -37,8 +37,8 @@
      * once the backend can query fire_reports by distance.
      */
     const vfDemoActiveFires = [
-        { id: 1, location: 'Brgy. 101, Tondo, Manila', lat: 14.6190, lng: 120.9706, aiLevel: 'High' },
-        { id: 2, location: 'Brgy. 98, Tondo, Manila', lat: 14.6205, lng: 120.9690, aiLevel: 'Moderate' },
+        { id: 1, location: 'Brgy. 101, Tondo, Manila', lat: 14.6190, lng: 120.9706 },
+        { id: 2, location: 'Brgy. 98, Tondo, Manila', lat: 14.6205, lng: 120.9690 },
     ];
 
     const NEARBY_RADIUS_KM = 5;
@@ -69,7 +69,6 @@
                 <span class="vf-status-dot vf-status-dot--active"></span>
                 <div style="flex:1;">
                     <strong>${f.location}</strong>
-                    <p style="margin:2px 0;color:var(--vf-muted);font-size:13px;">AI Fire Level: ${f.aiLevel}</p>
                 </div>
                 <span class="vf-badge">Active</span>
             </div>
