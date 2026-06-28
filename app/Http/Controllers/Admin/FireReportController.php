@@ -26,6 +26,7 @@ class FireReportController extends Controller
             'status' => $report->status,
             'photo_url' => $report->photo_path ? Storage::url($report->photo_path) : null,
             'reported_at' => $report->reported_at?->diffForHumans(),
+            'validation' => $report->validationSummary(),
         ]);
     }
 

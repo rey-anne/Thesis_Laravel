@@ -32,4 +32,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(AdminProfile::class);
     }
+
+    public function hasPermission(string $key): bool
+    {
+        if ($this->role === 'superadmin') {
+            return true;
+        }
+
+        return RolePermission::where('role', $this->role)
+            ->whereHas('permission', fn ($query) => $query->where('key', $key))
+            ->exists();
+    }
 }

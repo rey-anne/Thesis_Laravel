@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
             'view_heatmap' => 'View Heatmap Monitoring',
             'manage_post_operations' => 'Manage Post-Operation Records',
             'view_audit_logs' => 'View Audit Logs',
-            'manage_settings' => 'Manage System Settings',
         ];
 
         $permissionModels = [];

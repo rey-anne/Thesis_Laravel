@@ -48,7 +48,6 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
-            'role' => 'required|in:admin,bfp_firefighter,superadmin',
             'full_name' => 'required|string|max:150',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'contact_number' => 'required|string|max:30',
@@ -63,9 +62,51 @@ class UserController extends Controller
             $user->update(['approved_by' => auth()->id(), 'approved_at' => now()]);
         }
 
+        if ($user->role === 'admin') {
+            $profileData = $request->validate([
+                'id_number' => 'nullable|string|max:100',
+                'rank' => 'nullable|string|max:100',
+                'assigned_fire_station_id' => 'nullable|integer',
+                'command_level' => 'nullable|string|max:100',
+                'unit_division_handled' => 'nullable|string|max:150',
+                'managed_units' => 'nullable|string',
+                'area_of_jurisdiction' => 'nullable|string|max:150',
+                'official_email' => 'nullable|email|max:150',
+                'official_contact_number' => 'nullable|string|max:30',
+            ]);
+
+            $user->adminProfile()->updateOrCreate([], $profileData);
+        } elseif ($user->role === 'bfp_firefighter') {
+            $profileData = $request->validate([
+                'bfp_id_number' => 'nullable|string|max:100',
+                'rank' => 'nullable|string|max:100',
+                'assigned_fire_station_id' => 'nullable|integer',
+                'duty_status' => 'nullable|string|max:50',
+                'unit_division' => 'nullable|string|max:150',
+                'official_email' => 'nullable|email|max:150',
+                'official_contact_number' => 'nullable|string|max:30',
+            ]);
+
+            $user->firefighterProfile()->updateOrCreate([], $profileData);
+        }
+
         ActivityLog::record('user_updated', "Updated user {$user->full_name}");
 
         return redirect()->route('admin.users')->with('status', 'User updated.');
+    }
+
+    public function updateRole(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'role' => 'required|in:admin,bfp_firefighter,superadmin',
+        ]);
+
+        $previousRole = $user->role;
+        $user->update($data);
+
+        ActivityLog::record('user_role_updated', "Changed role for {$user->full_name} from {$previousRole} to {$data['role']}");
+
+        return redirect()->route('admin.users')->with('status', "Role updated for {$user->full_name}.");
     }
 
     public function destroy(User $user)

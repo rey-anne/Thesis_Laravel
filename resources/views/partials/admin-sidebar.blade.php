@@ -1,23 +1,30 @@
 @php
-    $isSuperadmin = auth()->user()->role === 'superadmin';
+    $authUser = auth()->user();
 
     $links = [
         'admin.home' => 'Dashboard',
     ];
 
-    if ($isSuperadmin) {
+    if ($authUser->hasPermission('manage_users')) {
         $links['admin.users'] = 'User Management';
+    }
+    if ($authUser->hasPermission('manage_roles_permissions')) {
         $links['admin.roles'] = 'Roles & Permissions';
     }
-
-    $links['admin.reports'] = 'Fire Reports';
-    $links['admin.metadata'] = 'Metadata Validation';
-    $links['admin.heatmap'] = 'Heatmap Monitoring';
-    $links['admin.post-operations'] = 'Post-Operation Records';
-
-    if ($isSuperadmin) {
+    if ($authUser->hasPermission('manage_reports')) {
+        $links['admin.reports'] = 'Fire Reports';
+    }
+    if ($authUser->hasPermission('validate_metadata')) {
+        $links['admin.metadata'] = 'Metadata Validation';
+    }
+    if ($authUser->hasPermission('view_heatmap')) {
+        $links['admin.heatmap'] = 'Heatmap Monitoring';
+    }
+    if ($authUser->hasPermission('manage_post_operations')) {
+        $links['admin.post-operations'] = 'Post-Operation Records';
+    }
+    if ($authUser->hasPermission('view_audit_logs')) {
         $links['admin.audit-logs'] = 'Audit Logs';
-        $links['admin.settings'] = 'System Settings';
     }
 
     $links['admin.profile'] = 'My Profile';

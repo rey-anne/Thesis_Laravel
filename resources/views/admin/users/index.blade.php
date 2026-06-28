@@ -4,7 +4,7 @@
 @section('content')
 <h1 style="color:var(--vf-red);margin-top:0;">User Management</h1>
 
-<button type="button" class="vf-btn" style="margin-bottom:18px;" onclick="document.getElementById('vfAddUserForm').style.display='block'">Add User</button>
+<button type="button" class="vf-btn" style="margin-bottom:18px;" onclick="vfToggleRow('vfAddUserForm')">Add User</button>
 
 <div id="vfAddUserForm" class="vf-card" style="display:none;margin-bottom:24px;">
     <h3 style="margin-top:0;color:var(--vf-red);">Add User</h3>
@@ -60,17 +60,39 @@
                 </td>
                 <td>
                     <div class="vf-admin-table__actions">
-                        <button type="button" onclick="document.getElementById('vfEditUser{{ $user->id }}').style.display='block'">Edit</button>
-                        <form method="POST" action="{{ route('admin.users.reset-password', $user) }}" onsubmit="return confirm('Reset password for {{ $user->full_name }}?')">
-                            @csrf
-                            <button type="submit">Reset</button>
-                        </form>
+                        <button type="button" class="vf-icon-btn vf-icon-btn--role" title="Change role"
+                            onclick="vfToggleRow('vfRoleUser{{ $user->id }}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="3.5"/><path d="M10.5 12.5L18 5"/><path d="M15.5 7.5l2 2"/><path d="M13 10l2 2"/></svg>
+                        </button>
+                        <button type="button" class="vf-icon-btn vf-icon-btn--edit" title="Edit information"
+                            onclick="vfToggleRow('vfEditUser{{ $user->id }}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11-4-4L4 16v4z"/><path d="M14.5 5.5l4 4"/></svg>
+                        </button>
                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Delete {{ $user->full_name }}?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit">Delete</button>
+                            <button type="submit" class="vf-icon-btn vf-icon-btn--delete" title="Delete user">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+                            </button>
                         </form>
                     </div>
+                </td>
+            </tr>
+            <tr id="vfRoleUser{{ $user->id }}" style="display:none;">
+                <td colspan="5">
+                    <form method="POST" action="{{ route('admin.users.update-role', $user) }}" style="display:flex;gap:10px;align-items:flex-end;">
+                        @csrf
+                        @method('PUT')
+                        <div>
+                            <label class="vf-label">Role for {{ $user->full_name }}</label>
+                            <select class="vf-input" name="role" required>
+                                @foreach(['admin' => 'Admin', 'bfp_firefighter' => 'Firefighter', 'superadmin' => 'Superadmin'] as $value => $label)
+                                    <option value="{{ $value }}" {{ $user->role === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="vf-btn">Save Role</button>
+                    </form>
                 </td>
             </tr>
             <tr id="vfEditUser{{ $user->id }}" style="display:none;">
@@ -91,14 +113,6 @@
                             <input class="vf-input" type="text" name="contact_number" value="{{ $user->contact_number }}" required>
                         </div>
                         <div>
-                            <label class="vf-label">Role</label>
-                            <select class="vf-input" name="role" required>
-                                @foreach(['admin' => 'Admin', 'bfp_firefighter' => 'Firefighter', 'superadmin' => 'Superadmin'] as $value => $label)
-                                    <option value="{{ $value }}" {{ $user->role === $value ? 'selected' : '' }}>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
                             <label class="vf-label">Account Status</label>
                             <select class="vf-input" name="account_status" required>
                                 @foreach(['pending' => 'Pending', 'active' => 'Active', 'suspended' => 'Suspended', 'revoked' => 'Revoked'] as $value => $label)
@@ -106,7 +120,82 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        @if($user->role === 'admin')
+                            <div style="flex-basis:100%;border-top:1px dashed var(--vf-line);margin:8px 0;"></div>
+                            <div>
+                                <label class="vf-label">ID Number</label>
+                                <input class="vf-input" type="text" name="id_number" value="{{ $user->adminProfile?->id_number }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Rank</label>
+                                <input class="vf-input" type="text" name="rank" value="{{ $user->adminProfile?->rank }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Command Level</label>
+                                <input class="vf-input" type="text" name="command_level" value="{{ $user->adminProfile?->command_level }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Unit / Division Handled</label>
+                                <input class="vf-input" type="text" name="unit_division_handled" value="{{ $user->adminProfile?->unit_division_handled }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Area of Jurisdiction</label>
+                                <input class="vf-input" type="text" name="area_of_jurisdiction" value="{{ $user->adminProfile?->area_of_jurisdiction }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Assigned Fire Station ID</label>
+                                <input class="vf-input" type="number" name="assigned_fire_station_id" value="{{ $user->adminProfile?->assigned_fire_station_id }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Official Email</label>
+                                <input class="vf-input" type="email" name="official_email" value="{{ $user->adminProfile?->official_email }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Official Contact Number</label>
+                                <input class="vf-input" type="text" name="official_contact_number" value="{{ $user->adminProfile?->official_contact_number }}">
+                            </div>
+                            <div style="flex-basis:100%;">
+                                <label class="vf-label">Managed Units</label>
+                                <input class="vf-input" type="text" name="managed_units" value="{{ $user->adminProfile?->managed_units }}">
+                            </div>
+                        @elseif($user->role === 'bfp_firefighter')
+                            <div style="flex-basis:100%;border-top:1px dashed var(--vf-line);margin:8px 0;"></div>
+                            <div>
+                                <label class="vf-label">BFP ID Number</label>
+                                <input class="vf-input" type="text" name="bfp_id_number" value="{{ $user->firefighterProfile?->bfp_id_number }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Rank</label>
+                                <input class="vf-input" type="text" name="rank" value="{{ $user->firefighterProfile?->rank }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Duty Status</label>
+                                <input class="vf-input" type="text" name="duty_status" value="{{ $user->firefighterProfile?->duty_status }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Unit / Division</label>
+                                <input class="vf-input" type="text" name="unit_division" value="{{ $user->firefighterProfile?->unit_division }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Assigned Fire Station ID</label>
+                                <input class="vf-input" type="number" name="assigned_fire_station_id" value="{{ $user->firefighterProfile?->assigned_fire_station_id }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Official Email</label>
+                                <input class="vf-input" type="email" name="official_email" value="{{ $user->firefighterProfile?->official_email }}">
+                            </div>
+                            <div>
+                                <label class="vf-label">Official Contact Number</label>
+                                <input class="vf-input" type="text" name="official_contact_number" value="{{ $user->firefighterProfile?->official_contact_number }}">
+                            </div>
+                        @endif
+
                         <button type="submit" class="vf-btn">Save</button>
+                    </form>
+                    <form method="POST" action="{{ route('admin.users.reset-password', $user) }}" style="margin-top:10px;" onsubmit="return confirm('Reset password for {{ $user->full_name }}?')">
+                        @csrf
+                        <button type="submit" class="vf-btn vf-btn--outline">Reset Password</button>
                     </form>
                 </td>
             </tr>
@@ -115,4 +204,12 @@
 </table>
 
 <div style="margin-top:18px;">{{ $users->links() }}</div>
+
+<script>
+function vfToggleRow(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+}
+</script>
 @endsection

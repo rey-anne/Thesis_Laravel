@@ -31,9 +31,13 @@
 
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: var(--vf-font-body, 'Source Sans 3', Arial, sans-serif);
             background: var(--vf-bg);
             color: var(--vf-ink);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--vf-font-display, 'Barlow Condensed', Arial, sans-serif);
         }
 
         a {
@@ -236,7 +240,7 @@
         }
 
         .vf-hero h1 {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: var(--vf-font-display, 'Barlow Condensed', Arial, sans-serif);
             font-size: 64px;
             font-weight: 900;
             line-height: 1.05;

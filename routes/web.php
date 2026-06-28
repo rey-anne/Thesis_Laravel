@@ -13,7 +13,6 @@ use App\Http\Controllers\Admin\FireReportController;
 use App\Http\Controllers\Admin\MetadataController;
 use App\Http\Controllers\Admin\PostOperationController;
 use App\Http\Controllers\Admin\AuditLogController;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Firefighter\ProfileController as FirefighterProfileController;
 
@@ -65,39 +64,48 @@ Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'reset']
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,superadmin'])->group(function () {
-    // Shared between admin and superadmin
+    // Shared between admin and superadmin - no permission gate, every admin account needs these
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
-    Route::get('/heatmap', [DashboardController::class, 'heatmap'])->name('heatmap');
-
-    Route::get('/reports', [FireReportController::class, 'index'])->name('reports');
-    Route::get('/reports/{report}', [FireReportController::class, 'show'])->name('reports.show');
-    Route::post('/reports/{report}/status', [FireReportController::class, 'updateStatus'])->name('reports.update-status');
-
-    Route::get('/metadata', [MetadataController::class, 'index'])->name('metadata');
-    Route::post('/metadata/{report}/validate', [MetadataController::class, 'validateMetadata'])->name('metadata.validate');
-
-    Route::get('/post-operations', [PostOperationController::class, 'index'])->name('post-operations');
-    Route::get('/post-operations/create', [PostOperationController::class, 'create'])->name('post-operations.create');
-    Route::post('/post-operations', [PostOperationController::class, 'store'])->name('post-operations.store');
-
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Superadmin-only
-    Route::middleware('role:superadmin')->group(function () {
+    Route::middleware('permission:view_heatmap')->group(function () {
+        Route::get('/heatmap', [DashboardController::class, 'heatmap'])->name('heatmap');
+    });
+
+    Route::middleware('permission:manage_reports')->group(function () {
+        Route::get('/reports', [FireReportController::class, 'index'])->name('reports');
+        Route::get('/reports/{report}', [FireReportController::class, 'show'])->name('reports.show');
+        Route::post('/reports/{report}/status', [FireReportController::class, 'updateStatus'])->name('reports.update-status');
+    });
+
+    Route::middleware('permission:validate_metadata')->group(function () {
+        Route::get('/metadata', [MetadataController::class, 'index'])->name('metadata');
+        Route::post('/metadata/{report}/validate', [MetadataController::class, 'validateMetadata'])->name('metadata.validate');
+    });
+
+    Route::middleware('permission:manage_post_operations')->group(function () {
+        Route::get('/post-operations', [PostOperationController::class, 'index'])->name('post-operations');
+        Route::get('/post-operations/create', [PostOperationController::class, 'create'])->name('post-operations.create');
+        Route::post('/post-operations', [PostOperationController::class, 'store'])->name('post-operations.store');
+    });
+
+    Route::middleware('permission:manage_users')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::put('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.update-role');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
+    });
 
+    Route::middleware('permission:manage_roles_permissions')->group(function () {
         Route::get('/roles-permissions', [RoleController::class, 'index'])->name('roles');
         Route::post('/roles-permissions', [RoleController::class, 'update'])->name('roles.update');
+    });
 
+    Route::middleware('permission:view_audit_logs')->group(function () {
         Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs');
-
-        Route::get('/settings', [SettingController::class, 'index'])->name('settings');
-        Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
 });
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CrowdsourceVerification;
 use App\Models\FireReport;
+use App\Services\PhotoAnalyzer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -20,12 +21,14 @@ class ReportController extends Controller
         $data = $request->validate([
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
+            'gps_accuracy' => 'nullable|numeric',
+            'captured_at' => 'nullable|date',
             'photo_data' => 'required|string',
         ]);
 
         $photoPath = $this->saveBase64Image($data['photo_data'], 'fire_reports');
 
-        FireReport::create([
+        $report = FireReport::create([
             // Keep this as null only if your database still has reporter_contact column
             'reporter_contact' => null,
 
@@ -35,10 +38,20 @@ class ReportController extends Controller
 
             'has_file_attachment' => !empty($photoPath),
             'photo_path' => $photoPath,
+            'photo_metadata' => [
+                'device' => $request->userAgent(),
+                'gps_accuracy_m' => $data['gps_accuracy'] ?? null,
+                'captured_at' => $data['captured_at'] ?? null,
+            ],
 
             'status' => 'active',
             'reported_at' => now(),
         ]);
+
+        $exifMetadata = (new PhotoAnalyzer())->analyze(Storage::disk('public')->path($photoPath));
+        $report->update(['exif_metadata' => $exifMetadata]);
+
+        $report->update(['validation_results' => $report->computeValidationResults()]);
 
         return redirect()->route('report.success');
     }
