@@ -26,7 +26,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,bfp_firefighter,superadmin',
             'full_name' => 'required|string|max:150',
             'email' => 'required|email|unique:users,email',
-            'contact_number' => 'required|string|max:30',
+            'contact_number' => 'required|string|max:30|unique:users,contact_number',
             'password' => 'required|min:8',
         ]);
 
@@ -50,7 +50,7 @@ class UserController extends Controller
         $data = $request->validate([
             'full_name' => 'required|string|max:150',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'contact_number' => 'required|string|max:30',
+            'contact_number' => 'required|string|max:30|unique:users,contact_number,' . $user->id,
             'account_status' => 'required|in:pending,active,suspended,revoked',
         ]);
 

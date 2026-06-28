@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\PostOperationController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Firefighter\ProfileController as FirefighterProfileController;
+use App\Http\Controllers\Firefighter\ReportController as FirefighterReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,21 +43,24 @@ Route::get('/heatmap-data', [PageController::class, 'heatmapData'])->name('heatm
 |--------------------------------------------------------------------------
 */
 Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.attempt');
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login')->name('login.attempt');
+Route::get('/login/verify-otp', [LoginController::class, 'showOtp'])->name('login.otp');
+Route::post('/login/verify-otp', [LoginController::class, 'verifyOtp'])->middleware('throttle:otp')->name('login.otp.verify');
+Route::post('/login/resend-otp', [LoginController::class, 'resendOtp'])->middleware('throttle:otp-resend')->name('login.otp.resend');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/register', [RegisterController::class, 'show'])->name('register');
-Route::post('/register', [RegisterController::class, 'register'])->name('register.attempt');
+Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:login')->name('register.attempt');
 Route::get('/register/verify-otp', [RegisterController::class, 'showOtp'])->name('register.otp');
-Route::post('/register/verify-otp', [RegisterController::class, 'verifyOtp'])->name('register.otp.verify');
-Route::post('/register/resend-otp', [RegisterController::class, 'resendOtp'])->name('register.otp.resend');
+Route::post('/register/verify-otp', [RegisterController::class, 'verifyOtp'])->middleware('throttle:otp')->name('register.otp.verify');
+Route::post('/register/resend-otp', [RegisterController::class, 'resendOtp'])->middleware('throttle:otp-resend')->name('register.otp.resend');
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'show'])->name('password.request');
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp'])->name('password.send-otp');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp'])->middleware('throttle:otp-resend')->name('password.send-otp');
 Route::get('/forgot-password/verify-otp', [ForgotPasswordController::class, 'showOtp'])->name('password.otp');
-Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('password.otp.verify');
+Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->middleware('throttle:otp')->name('password.otp.verify');
 Route::get('/forgot-password/reset', [ForgotPasswordController::class, 'showReset'])->name('password.reset');
-Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'reset'])->name('password.reset.attempt');
+Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'reset'])->middleware('throttle:login')->name('password.reset.attempt');
 
 /*
 |--------------------------------------------------------------------------
@@ -116,6 +120,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,superadm
 */
 Route::prefix('firefighter')->name('firefighter.')->middleware(['auth', 'role:bfp_firefighter'])->group(function () {
     Route::get('/home', [PageController::class, 'firefighterHome'])->name('home');
+    Route::get('/reports/{report}', [FirefighterReportController::class, 'show'])->name('reports.show');
+    Route::post('/reports/{report}/status', [FirefighterReportController::class, 'updateStatus'])->name('reports.update-status');
     Route::get('/heatmap', [PageController::class, 'firefighterHeatmap'])->name('heatmap');
     Route::get('/profile', [FirefighterProfileController::class, 'index'])->name('profile');
     Route::put('/profile', [FirefighterProfileController::class, 'update'])->name('profile.update');

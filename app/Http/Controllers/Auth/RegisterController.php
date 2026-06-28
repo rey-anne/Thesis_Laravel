@@ -24,7 +24,7 @@ class RegisterController extends Controller
             'full_name' => 'required|string|max:150',
             'role' => 'required|in:bfp_firefighter,admin',
             'email' => 'required|email|unique:users,email',
-            'contact_number' => 'required|string|max:30',
+            'contact_number' => 'required|string|max:30|unique:users,contact_number',
             'password' => 'required|min:8|confirmed',
         ]);
 

@@ -16,9 +16,11 @@ class OtpMail extends Mailable
     public function __construct(string $otpCode, string $purpose)
     {
         $this->otpCode = $otpCode;
-        $this->purposeLabel = $purpose === 'password_reset'
-            ? 'reset your password'
-            : 'verify your email address';
+        $this->purposeLabel = match ($purpose) {
+            'password_reset' => 'reset your password',
+            'login' => 'log in to your account',
+            default => 'verify your email address',
+        };
     }
 
     public function build()

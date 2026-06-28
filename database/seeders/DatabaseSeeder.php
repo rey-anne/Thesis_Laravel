@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
                 'role' => 'superadmin',
                 'full_name' => 'Reyanne Ramos',
                 'contact_number' => '0000000000',
-                'password' => Hash::make('Password123!'),
+                'password' => Hash::make(env('SUPERADMIN_DEFAULT_PASSWORD', 'Password123!')),
                 'account_status' => 'active',
                 'date_registered' => now(),
             ]

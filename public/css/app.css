@@ -646,6 +646,106 @@ select:focus-visible {
     outline: none;
 }
 
+.vf-otp-channels__label {
+    text-align: center;
+    color: var(--vf-muted);
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 16px;
+    margin-bottom: 10px;
+}
+
+.vf-otp-channels {
+    display: flex;
+    gap: 10px;
+}
+
+.vf-otp-channel-form {
+    flex: 1;
+    min-width: 0;
+}
+
+.vf-otp-channel {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    background: var(--vf-surface);
+    border: 1.5px solid var(--vf-line);
+    border-radius: var(--vf-radius-sm);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+}
+
+.vf-otp-channel:hover {
+    border-color: var(--vf-red);
+    transform: translateY(-1px);
+}
+
+.vf-otp-channel--active {
+    border-color: var(--vf-red);
+    background: var(--vf-red-tint);
+}
+
+.vf-otp-channel__icon {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vf-red-tint);
+    color: var(--vf-red);
+}
+
+.vf-otp-channel--active .vf-otp-channel__icon {
+    background: var(--vf-red);
+    color: #fff;
+}
+
+.vf-otp-channel__icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.vf-otp-channel__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.vf-otp-channel__title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--vf-ink);
+}
+
+.vf-otp-channel__value {
+    font-size: 12px;
+    color: var(--vf-muted);
+    font-family: var(--vf-font-mono);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vf-otp-channel__badge {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: #fff;
+    background: var(--vf-green);
+    border-radius: 999px;
+    padding: 3px 8px;
+}
+
 @media (max-width: 480px) {
     .vf-auth-card {
         padding: 32px 20px;
@@ -653,6 +753,10 @@ select:focus-visible {
 
     .vf-otp-inputs {
         gap: 6px;
+    }
+
+    .vf-otp-channels {
+        flex-direction: column;
     }
 }
 

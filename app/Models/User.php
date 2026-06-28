@@ -43,4 +43,17 @@ class User extends Authenticatable
             ->whereHas('permission', fn ($query) => $query->where('key', $key))
             ->exists();
     }
+
+    public function dashboardLayout(): string
+    {
+        if ($this->role === 'bfp_firefighter') {
+            return 'layouts.firefighter';
+        }
+
+        if (in_array($this->role, ['admin', 'superadmin'])) {
+            return 'layouts.admin';
+        }
+
+        return 'layouts.app';
+    }
 }
